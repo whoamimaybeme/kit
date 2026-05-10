@@ -30,4 +30,3 @@ The channel won't be getting deleted until we are confident that the guides prov
 
 * [Tower Theory](https://docs.google.com/document/d/1vLhS-dHPZjxy59igqfzvHPXMQkptlbqvn5u1_rSrV4k/edit?usp=sharing) - A document by emflamed that contains advice pertaining to tower building. Feel free to suggest additions.
 * [Roblox Creator Docs](https://create.roblox.com/docs) - Documentation pertaining to Roblox.
-* [Tower of Understanding The Medium](https://www.roblox.com/games/77384159240473) - A tower by NullspaceInteract that presents principles that you should follow while building a tower.
