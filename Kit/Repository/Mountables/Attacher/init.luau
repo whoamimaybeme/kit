@@ -56,7 +56,7 @@ local ATTACHER_CONFIG_TEMPLATE = {
 
 local function getLimb(character: Instance?, hitPart: BasePart, limb: Enum.Limb): BasePart?
 	if not character or not limb then
-		return
+		return nil
 	end
 	if limb == Enum.Limb.Unknown then
 		return nil
@@ -65,7 +65,7 @@ local function getLimb(character: Instance?, hitPart: BasePart, limb: Enum.Limb)
 	local limbName = LIMB_MAP[limb]
 	local limbPart = character:FindFirstChild(limbName)
 	if not limbPart or not limbPart:IsA("BasePart") then
-		return
+		return nil
 	end
 	return limbPart
 end
@@ -142,7 +142,7 @@ function Attacher.Run(scope: _T.Scope, utility: _T.Utility)
 
 	local touchConfiguration =
 		Config.GetConfig(scope, attacherConfig:FindFirstChild("TouchConfiguration"), Config.TOUCH_CONFIG)
-			:ObserveChanges()
+		:ObserveChanges()
 
 	--> Main Functionality
 	local touchDebounce = {}
@@ -161,7 +161,7 @@ function Attacher.Run(scope: _T.Scope, utility: _T.Utility)
 
 		local attachTo = nil
 		if hitPart:IsDescendantOf(character) then
-            if table.find(utility.Character.getHitbox("WholeBody"), hitPart) then
+			if table.find(utility.Character.getHitbox("WholeBody"), hitPart) then
 				attachTo = getLimb(character, hitPart, configuration.WeldToLimb)
 			end
 		else

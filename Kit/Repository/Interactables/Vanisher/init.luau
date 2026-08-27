@@ -278,7 +278,10 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 		local selectionBox = vanisherPart.selection
 		local defaults = vanisherPart.defaults
 
-		local blinkSound = vanisher:FindFirstChild("BlinkSound") or script.DefaultBlinkSound
+		local blinkSound = vanisher:FindFirstChild("BlinkSound") :: Sound
+		if not blinkSound or not blinkSound:IsA("Sound") then
+			blinkSound = script.DefaultBlinkSound
+		end
 		blinkSound = blinkSound:Clone()
 		blinkSound.Name = "Blinked"
 		blinkSound.Parent = vanisher
@@ -462,7 +465,8 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 	local function getWholeBody()
 		return utility.Character.getHitbox("StaticWholeBody")
 	end
-
+	
+	local charparts = utility.Character.getCharacter()
 	for _, vanisherPart in vanisherParts do
 		local vanisher = vanisherPart.part
 
@@ -471,7 +475,7 @@ function Vanisher.Run(scope: _T.Scope, utility: _T.Utility)
 				return
 			end
 
-			if hitPart:IsDescendantOf(Players.LocalPlayer.Character) then
+			if hitPart:IsDescendantOf(charparts.character) then
 				hitPart = getWholeBody()[1]
 			end
 

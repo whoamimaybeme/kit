@@ -130,5 +130,4 @@ function Table.FlipValuesIndices<I, V>(item: { [I]: V }): { [V]: I }
 	return new
 end
 
-local merged = Table.Merge(Table, tableUtil) --table.freeze messes this type up
-return table.freeze(merged) :: typeof(merged)
+return Table.Merge(Table, tableUtil)

@@ -63,8 +63,9 @@ function TripPart.Run(scope: _T.Scope, utility: _T.Utility)
 
 	--> Main Functionality
 	local tripCooldown = false
+	local charparts = utility.Character.getCharacter()
 	local function trip()
-		local humanoid = player.Character:FindFirstChildWhichIsA("Humanoid")
+		local humanoid = charparts.humanoid
 		if not humanoid then
 			return
 		end

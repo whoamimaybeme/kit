@@ -45,13 +45,6 @@ function PushingPlatformTrampoline.Run(scope: _T.Scope, utility: _T.Utility)
 		return
 	end
 
-	local anchor = nil
-	local base = nil
-	local prismatic = nil
-	local vectorForce = nil
-	local lowerLimit = nil
-	local upperLimit = nil
-
 	local active = false
 
 	scope:attach(trampoline)
@@ -61,50 +54,48 @@ function PushingPlatformTrampoline.Run(scope: _T.Scope, utility: _T.Utility)
 	local configuration = Config.GetConfig(scope, trampolineConfig, PLATFORM_CONFIG_TEMPLATE):ObserveChanges()
 
 	--> Get objects and check for problems
-	do
-		anchor = trampoline:FindFirstChild("Anchor")
-		if not anchor or not anchor:IsA("BasePart") then
-			scope:log({
-				"PushingPlatformTrampoline is either missing its Anchor part or has it set up incorrectly.",
-				`Path: {trampoline:GetFullName()}`,
-				type = "warn",
-			})
-			return
-		end
-
-		base = trampoline:FindFirstChild("Base")
-		if not base or not base:IsA("BasePart") then
-			scope:log({
-				"PushingPlatformTrampoline is either missing its Base part or has it set up incorrectly.",
-				`Path: {trampoline:GetFullName()}`,
-				type = "warn",
-			})
-			return
-		end
-
-		prismatic = anchor:FindFirstChildOfClass("PrismaticConstraint")
-		if not prismatic then
-			scope:log({
-				"PushingPlatformTrampoline is missing its PrismaticConstraint and cannot function correctly.",
-				`Path: {trampoline:GetFullName()}`,
-				type = "warn",
-			})
-			return
-		end
-
-		vectorForce = base:FindFirstChildOfClass("VectorForce")
-		if not vectorForce then
-			scope:log({
-				"PushingPlatformTrampoline is missing its VectorForce and cannot function correctly.",
-				`Path: {trampoline:GetFullName()}`,
-				type = "warn",
-			})
-			return
-		end
-
-		upperLimit = prismatic.UpperLimit - 0.2
-		lowerLimit = prismatic.LowerLimit + 0.2
+	const anchor = trampoline:FindFirstChild("Anchor")
+	if not anchor or not anchor:IsA("BasePart") then
+		scope:log({
+			"PushingPlatformTrampoline is either missing its Anchor part or has it set up incorrectly.",
+			`Path: {trampoline:GetFullName()}`,
+			type = "warn",
+		})
+		return
 	end
+
+	const base = trampoline:FindFirstChild("Base")
+	if not base or not base:IsA("BasePart") then
+		scope:log({
+			"PushingPlatformTrampoline is either missing its Base part or has it set up incorrectly.",
+			`Path: {trampoline:GetFullName()}`,
+			type = "warn",
+		})
+		return
+	end
+
+	const prismatic = anchor:FindFirstChildOfClass("PrismaticConstraint")
+	if not prismatic then
+		scope:log({
+			"PushingPlatformTrampoline is missing its PrismaticConstraint and cannot function correctly.",
+			`Path: {trampoline:GetFullName()}`,
+			type = "warn",
+		})
+		return
+	end
+
+	const vectorForce = base:FindFirstChildOfClass("VectorForce")
+	if not vectorForce then
+		scope:log({
+			"PushingPlatformTrampoline is missing its VectorForce and cannot function correctly.",
+			`Path: {trampoline:GetFullName()}`,
+			type = "warn",
+		})
+		return
+	end
+
+	local upperLimit = prismatic.UpperLimit - 0.2
+	local lowerLimit = prismatic.LowerLimit + 0.2
 
 	--> Setup beam if possible
 	local indicatorBeam = trampoline:FindFirstChild("TrampolineBeam", true)

@@ -53,25 +53,31 @@ function MovingPlatform.Run(scope: _T.Scope, utility: _T.Utility)
 			:ObserveChanges()
 
 	--> Setup Platform
-	local platform = nil
-	for _, v in model:GetChildren() do
-		if not v:IsA("BasePart") or v.Name ~= "Platform" then
-			continue
+	local platforms = model:QueryDescendants("BasePart#Platform")
+	for _, plat in platforms do
+		if plat.Parent ~= model then
+			table.remove(platforms, table.find(platforms,plat))
 		end
-
-		if platform then
-			scope:log({
-				`{model:GetFullName()} has multiple 'Platform' objects. There should only be one.`,
-				type = "error",
-				printType = "warn",
-				traceback = false,
-			})
-
-			return
-		end
-
-		platform = v
 	end
+	if #platforms == 0 then
+		scope:log({
+			`{model:GetFullName()} has no 'Platform' part.`,
+			type = "error",
+			printType = "warn",
+			traceback = false,
+		})
+		return
+	end
+	if #platforms >= 2 then
+		scope:log({
+			`{model:GetFullName()} has multiple 'Platform' objects. There should only be one.`,
+			type = "error",
+			printType = "warn",
+			traceback = false,
+		})
+		return
+	end
+	local platform = platforms[1] :: BasePart
 
 	local platformAttachment = platform:FindFirstChildOfClass("Attachment")
 	local positions = model:FindFirstChild("Positions")

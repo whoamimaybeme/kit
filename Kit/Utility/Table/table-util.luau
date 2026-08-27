@@ -427,7 +427,7 @@ end
 	This function works on arrays, but not dictionaries.
 	:::
 ]=]
-local function Extend<T, E>(target: { T }, extension: { E }): { T } & { E }
+local function Extend<T, E>(target: { T }, extension: { E }): { T | E }
 	local tbl = table.clone(target) :: { any }
 	for _, v in extension do
 		table.insert(tbl, v)
@@ -897,7 +897,7 @@ end
 	TableUtil.IsEmpty({abc = 32}) -- false
 	```
 ]=]
-local function IsEmpty(tbl: { [unknown]: unknown }): boolean
+local function IsEmpty<T, U>(tbl: { [T]: U }): boolean
 	return next(tbl) == nil
 end
 

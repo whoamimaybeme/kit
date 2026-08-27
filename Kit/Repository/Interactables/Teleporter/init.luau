@@ -81,10 +81,10 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 	local configuration = Config.GetConfig(scope, teleporterConfig, TELEPORTER_CONFIG_TEMPLATE):ObserveChanges()
 	local touchConfiguration =
 		Config.GetConfig(scope, teleporterConfig:FindFirstChild("TouchConfiguration"), Config.TOUCH_CONFIG)
-			:ObserveChanges()
+		:ObserveChanges()
 	local tweenConfiguration =
 		Config.GetConfig(scope, teleporterConfig:FindFirstChild("TweenConfiguration"), Config.TWEEN_CONFIG)
-			:ObserveChanges()
+		:ObserveChanges()
 
 	local function getActiveDestinations()
 		return utility.Table.Filter(destinationParts, function(destination)
@@ -94,6 +94,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 
 	--> Main Functionality
 	local isTeleporting = false
+	local charparts = utility.Character.getCharacter()
 	local function teleport(teleporter: BasePart, part: BasePart, isPlayer: boolean)
 		local activeDestinations = getActiveDestinations()
 		if isTeleporting or teleporter:GetAttribute("Activated") == false or #activeDestinations <= 0 then
@@ -116,7 +117,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 		end
 		if configuration.DisableCollision then
 			if isPlayer then
-				for _, part in localPlayer.Character:GetChildren() do
+				for _, part in charparts.character:GetChildren() do
 					if not part:IsA("BasePart") or savedPartProperties[part] ~= nil then
 						continue
 					end
@@ -138,7 +139,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 		local teleporterCFrame = teleporter:GetPivot()
 		local targetCFrame = destinationCFrame * configuration.Offset
 
-		local camera = Workspace.CurrentCamera
+		local camera = Workspace.CurrentCamera :: Camera
 		local targetCameraCFrame
 		if configuration.SeamlessTeleport then
 			targetCFrame = destinationCFrame * teleporterCFrame:ToObjectSpace(part:GetPivot())
@@ -189,7 +190,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 			end
 
 			local part: BasePart?
-			local character = localPlayer.Character
+			local character = charparts.character
 			local isPlayer = false
 			if touchingPart:IsDescendantOf(character) and character.PrimaryPart then
 				isPlayer = true
@@ -207,7 +208,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 		if touchConfiguration.canFlip then
 			teleporter:AddTag("DoNotFlipPlayer")
 			scope:add(utility.ClientObjects.bindToFlip(teleporter, function()
-				teleport(teleporter, localPlayer.Character.PrimaryPart, true)
+				teleport(teleporter, charparts.primaryPart :: BasePart, true)
 			end))
 		end
 	end
@@ -215,7 +216,7 @@ function Teleporter.Run(scope: _T.Scope, utility: _T.Utility)
 	--> Sequencer Cache Support
 	local cache = utility.Scope.getCached(scope, scope.scriptPath, handleCache)
 	cache[teleporterModel] = function()
-		teleport(teleporterParts[1], localPlayer.Character.PrimaryPart, true)
+		teleport(teleporterParts[1], charparts.primaryPart :: BasePart, true)
 	end
 	scope:add(function()
 		cache[teleporterModel] = nil

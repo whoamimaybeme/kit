@@ -57,7 +57,7 @@ local function handleCache(rootScope: _T.Scope, utility: _T.Utility)
 	return cache
 end
 
-local player = Players.LocalPlayer
+local player = Players.LocalPlayer :: Player
 function Turret.Run(scope: _T.Scope, utility: _T.Utility)
 	local turretConfig = scope.instance
 	if not turretConfig then
@@ -110,9 +110,6 @@ function Turret.Run(scope: _T.Scope, utility: _T.Utility)
 		return
 	end
 
-	--> Variables
-	local player = Players.LocalPlayer
-
 	--> Functions
 	local function isValidHit(bullet: BasePart, hitPart: BasePart): TurretHitData
 		if
@@ -122,7 +119,7 @@ function Turret.Run(scope: _T.Scope, utility: _T.Utility)
 			return HIT_TYPES.INVALID
 		end
 
-		local hitPlayer = Players:GetPlayerFromCharacter(hitPart.Parent)
+		local hitPlayer = utility.ClientObjects.validatePlayerToucher(hitPart) and player
 		if utility.ClientObjects.evaluateToucher(bullet, hitPart, touchConfiguration) then
 			if hitPlayer then
 				return if hitPlayer == player then HIT_TYPES.VALID_PLAYER else HIT_TYPES.INVALID
@@ -139,7 +136,12 @@ function Turret.Run(scope: _T.Scope, utility: _T.Utility)
 
 		local bulletModel = bulletScope:add(bulletTemplate:Clone())
 		local mainPart = bulletModel.PrimaryPart
-			or bulletModel:FindFirstChild("Bullet")
+			or (function()
+				local bullet = bulletModel:FindFirstChild("Bullet")
+				if bullet and bullet:IsA("BasePart") then
+					bulletModel:FindFirstChild("Bullet")
+				end
+			end)()
 			or (function()
 				local baseBullet = script.Bullet:Clone()
 				baseBullet.Parent = bulletModel

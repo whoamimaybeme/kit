@@ -90,7 +90,7 @@ function SongTime.BuildSyncCache(data: SyncModule): MethodCache?
 			"No BPM data found in SongTimeConfiguration",
 			type = "warn",
 		})
-		return
+		return nil
 	end
 
 	if not data.BeatsPerMinute[1] or data.BeatsPerMinute[1].beat ~= 0 then
@@ -98,12 +98,12 @@ function SongTime.BuildSyncCache(data: SyncModule): MethodCache?
 			"BPM must be set at beat 0",
 			type = "warn",
 		})
-		return
+		return nil
 	end
 
 	--> Get & sort BPM and Stop events
 	local events = TableUtil.Extend(data.BeatsPerMinute, data.Stops)
-	table.sort(events, function(a, b)
+	table.sort<<BPMChange | Stop>>(events, function(a, b)
 		return a.beat < b.beat
 	end)
 
