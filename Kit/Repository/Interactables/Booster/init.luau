@@ -283,10 +283,6 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 		if touchConfiguration.canFlip then
 			scope:add(utility.ClientObjects.bindToFlip(booster, activateBoost))
 		end
-	elseif configuration.Mode == "Zone" then
-		if ClientObjectUtil.isInstanceActive(scope, boosterData.hitbox) then
-			table.insert(cache.boosters, boosterData)
-		end
 	elseif configuration.Mode == "Pad" then
 		local padHitbox = Instance.fromExisting(booster)
 		padHitbox.Name = "Hitbox"
@@ -309,10 +305,7 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 		padHitbox.Anchored = false
 
 		boosterData.hitbox = padHitbox
-		if ClientObjectUtil.isInstanceActive(scope, boosterData.hitbox) then
-			table.insert(cache.boosters, boosterData)
-		end
-	else
+	elseif configuration.Mode ~= "Zone" then
 		scope:log({
 			"Booster has an unknown Mode and cannot function.",
 			`Path: {booster:GetFullName()}`,
@@ -322,6 +315,10 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 	end
 	
 	if configuration.Mode ~= "Default" then
+		if ClientObjectUtil.isInstanceActive(scope, boosterData.hitbox) then
+			table.insert(cache.boosters, boosterData)
+		end
+		
 		ClientObjectUtil.listenInstanceActive(scope, boosterData.hitbox, nil, function(active)
 			if active then
 				if table.find(cache.boosters, boosterData) then
