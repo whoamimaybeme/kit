@@ -93,7 +93,7 @@ local function handleCache(rootScope: _T.Scope, utility: _T.Utility): _TDefs.Cac
 	local shared = rootScope.shared
 	local clientObjects = rootScope.clientObjects
 	local characterInstances = utility.Character.getCharacter()
-	local localPlayer = Players.LocalPlayer
+	local localPlayer = Players.LocalPlayer :: Player
 	local function tagFilter(instance: Instance)
 		if BLACKLISTED_CLASSES[instance.ClassName] then
 			return false
@@ -307,7 +307,7 @@ local function handleCache(rootScope: _T.Scope, utility: _T.Utility): _TDefs.Cac
 		IsJumping = function()
 			return utility.JumpButton.IsDown()
 		end,
-		IsKeyDown = function(key: string | Enum.KeyCode)
+		IsKeyDown = function(_, key: string | Enum.KeyCode)
 			return UserInputService:IsKeyDown(key)
 		end,
 		PreferredInput = function()

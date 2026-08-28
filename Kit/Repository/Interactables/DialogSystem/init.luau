@@ -46,6 +46,11 @@ type TextSequence = {
 	TypeSound: Sound?,
 }
 
+-- important variables
+local player = Players.LocalPlayer :: Player
+local playerMouse = player:GetMouse()
+local Typewriter = require((ReplicatedStorage:WaitForChild("DialogModuleInstance") :: any).Value) :: any -- why the hell
+
 function DialogSystem.Run(scope: _T.Scope, utility: _T.Utility)
 	local Config = utility.Config
 	local roundColor = utility.Functions.roundColor
@@ -64,11 +69,6 @@ function DialogSystem.Run(scope: _T.Scope, utility: _T.Utility)
 	if not dialogParts then
 		return
 	end
-
-	-- important variables
-	local player = Players.LocalPlayer
-	local playerMouse = player:GetMouse()
-	local Typewriter = require(ReplicatedStorage:WaitForChild("DialogModuleInstance").Value)
 
 	local dialogUI = player.PlayerGui:WaitForChild("Dialog")
 	local textFrame = dialogUI:WaitForChild("textFrame")

@@ -45,7 +45,7 @@ export type Key = {
 		startTimer: number?,
 		collectKey: (self: Key) -> (),
 		returnKey: (self: Key) -> (),
-		viewport: typeof(script.KeyViewport),
+		viewport: typeof(script.Parent.KeyViewport),
 	}?,
 }
 export type KeyDoor = {

@@ -42,7 +42,6 @@ local DOOR_DESTROY_METHODS = {
 		tween.Completed:Once(function()
 			part:Destroy()
 			tween:Destroy()
-			tween = nil
 		end)
 	end,
 
@@ -62,7 +61,7 @@ local DOOR_DESTROY_METHODS = {
 		for _, joint in part:GetJoints() do -- BreakJoints is deprecated
 			joint:Destroy()
 		end
-		
+
 		task.delay(10, function()
 			part:Destroy()
 		end)
@@ -130,7 +129,7 @@ local function handleKeyCache(rootScope: _T.Scope, utility: _T.Utility): Cache
 		emitter.Parent = Workspace
 		emitter:PivotTo(self.hitbox:GetPivot())
 
-		local particle = self.hitbox:FindFirstChild("ReplaceEffect")
+		local particle = self.hitbox:FindFirstChild("ReplaceEffect") :: ParticleEmitter
 		if not particle or not particle:IsA("ParticleEmitter") then
 			particle = script.Effect:Clone()
 		end
@@ -177,7 +176,7 @@ local function handleKeyCache(rootScope: _T.Scope, utility: _T.Utility): Cache
 
 	local function keyConstructor(group: KeyGroup, key: Key): Key?
 		if not key.instance or not key.instance.Parent then
-			return
+			return nil
 		end
 
 		local id = generateUID()
@@ -193,6 +192,8 @@ local function handleKeyCache(rootScope: _T.Scope, utility: _T.Utility): Cache
 			collectKey = collectKey,
 			returnKey = returnKey,
 			group = group,
+			targetCFrame = nil,
+			startTimer = nil,
 		}
 		key.__private = cacheData
 
@@ -350,7 +351,7 @@ local function handleKeyCache(rootScope: _T.Scope, utility: _T.Utility): Cache
 	local lastTrailUpdateTime = 0
 
 	local characterInstances = utility.Character.getCharacter()
-	local currentCamera = Workspace.CurrentCamera
+	local currentCamera = Workspace.CurrentCamera :: Camera
 	local formatTimer = utility.ClientObjects.formatTimerText
 	rootScope:add(RunService.Heartbeat:Connect(function(deltaTime: number)
 		debug.profilebegin("KeyGroup > Loop")
@@ -370,7 +371,7 @@ local function handleKeyCache(rootScope: _T.Scope, utility: _T.Utility): Cache
 			(#cache.activeKeys <= 0 and (currentClock - lastTrailUpdateTime) > TRAIL_UPDATE_THRESHOLD)
 			or (
 				not lastTrailUpdatePosition
-				or (currentPosition - lastTrailUpdatePosition).Magnitude > TRAIL_UPDATE_THRESHOLD
+					or (currentPosition - lastTrailUpdatePosition).Magnitude > TRAIL_UPDATE_THRESHOLD
 			)
 		then
 			table.insert(trailList, 1, currentPosition)
@@ -494,7 +495,7 @@ function KeyGroup.Run(scope: _T.Scope, utility: _T.Utility)
 
 				local keyConfig =
 					Config.GetConfig(scope, instance:FindFirstChild("KeyConfiguration"), KEY_CONFIG_TEMPLATE)
-						:ObserveChanges()
+					:ObserveChanges()
 
 				local thisKey = assert(thisGroup:addKey({
 					instance = instance,
@@ -536,7 +537,7 @@ function KeyGroup.Run(scope: _T.Scope, utility: _T.Utility)
 
 				local doorConfig =
 					Config.GetConfig(scope, instance:FindFirstChild("DoorConfiguration"), DOOR_CONFIG_TEMPLATE)
-						:ObserveChanges()
+					:ObserveChanges()
 
 				local thisDoor = assert(thisGroup:addDoor({
 					instance = instance,
