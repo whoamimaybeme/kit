@@ -138,6 +138,8 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			activeBoosters = {},
 		}
 		
+		local overlapParams = OverlapParams.new()
+		overlapParams.CollisionGroup = ""
 		local characterHitboxParts = CharacterUtil.getHitbox("StaticWholeBody")
 
 		local lastTick = os.clock()
@@ -160,7 +162,7 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			--> Get touching parts and determine if any zone boosters are being touched
 			local touchingParts = {}
 			for _, hitboxPart in characterHitboxParts do
-				for _, part in Workspace:GetPartsInPart(hitboxPart) do
+				for _, part in Workspace:GetPartsInPart(hitboxPart, overlapParams) do
 					touchingParts[part] = true
 				end
 			end
