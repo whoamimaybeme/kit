@@ -131,17 +131,14 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 	end
 
 	--> Cache system and main loop for zone boosters
-	local overlapParams = OverlapParams.new()
-	overlapParams.FilterType = Enum.RaycastFilterType.Include
-	overlapParams.CollisionGroup = ""
-	CharacterUtil.getHitbox("StaticWholeBody", overlapParams)
-
 	local cache = utility.Scope.getCached(scope, scope.scriptPath, function()
 		local cache: BoosterCache = {
 			activators = {},
 			boosters = {},
 			activeBoosters = {},
 		}
+		
+		local characterHitboxParts = CharacterUtil.getHitbox("StaticWholeBody")
 
 		local lastTick = os.clock()
 		local fpsCap = 1 / 60
@@ -161,10 +158,17 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			lastTick = currentTick
 
 			--> Get touching parts and determine if any zone boosters are being touched
+			local touchingParts = {}
+			for _, hitboxPart in characterHitboxParts do
+				for _, part in Workspace:GetPartsInPart(hitboxPart) do
+					touchingParts[part] = true
+				end
+			end
+			
 			local touchingBoosters: { Booster } = {}
 			for _, booster in cache.boosters do
 				if
-					#Workspace:GetPartsInPart(booster.hitbox, overlapParams) > 0
+					touchingParts[booster.hitbox]
 					and booster.hitbox:GetAttribute("Activated") ~= false
 				then
 					table.insert(touchingBoosters, booster)
@@ -299,6 +303,13 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 		})
 		return
 	end
+	
+	scope:add(function()
+		local boosterDataSlot = table.find(cache, boosterData)
+		if boosterDataSlot then
+			table.remove(cache, boosterDataSlot)
+		end
+	end)
 end
 
 return Booster
