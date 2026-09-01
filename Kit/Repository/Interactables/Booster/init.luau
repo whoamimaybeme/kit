@@ -156,7 +156,6 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 		local lastTick = os.clock()
 		local fpsCap = 1 / 60
 		
-		local isTableEmpty = utility.Table.IsEmpty
 		scope.rootScope:add(RunService.Heartbeat:Connect(function(deltaTime: number)
 			--> Cap loop to 60fps
 			local currentTick = os.clock()
@@ -165,7 +164,7 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			end
 			lastTick = currentTick
 			
-			if isTableEmpty(cache.boosters) then
+			if not cache.boosters[1] then
 				return
 			end
 			
