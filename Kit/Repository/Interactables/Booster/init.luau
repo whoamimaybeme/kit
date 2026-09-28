@@ -150,7 +150,6 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			char:WaitForChild("_HITBOX")
 			overlapParams.ExcludeInstances = {char :: Instance}
 			characterHitboxParts = CharacterUtil.getHitbox("StaticWholeBody")
-			print(characterHitboxParts)
 		end))
 
 		local lastTick = os.clock()
