@@ -77,6 +77,19 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 	if not booster or not booster:IsA("BasePart") then
 		return
 	end
+
+	local CharacterUtil = utility.Character
+	local Config = utility.Config
+	local configuration = Config.GetConfig(scope, boosterConfig, BOOSTER_CONFIG_TEMPLATE):ObserveChanges()
+	local touchConfiguration =
+		Config.GetConfig(scope, boosterConfig:FindFirstChild("TouchConfiguration"), Config.TOUCH_CONFIG)
+		:ObserveChanges()
+	local startTweenConfiguration =
+		Config.GetConfig(scope, boosterConfig:FindFirstChild("StartTweenConfiguration"), Config.TWEEN_CONFIG)
+		:ObserveChanges()
+	local endTweenConfiguration =
+		Config.GetConfig(scope, boosterConfig:FindFirstChild("EndTweenConfiguration"), Config.TWEEN_CONFIG)
+		:ObserveChanges()
 	
 	--> BoostPad backwards compatibility
 	if scope.scriptPath == "Interactables/BoostPad" then
@@ -87,40 +100,12 @@ function Booster.Run(scope: _T.Scope, utility: _T.Utility)
 			type = "warn",
 		})
 		
-		local startTweenConfig = scope:add(Instance.new("Configuration"))
-		startTweenConfig.Parent = boosterConfig
-		startTweenConfig.Name = "StartTweenConfiguration"
-		startTweenConfig:SetAttribute("Time", 0)
-		startTweenConfig:SetAttribute("Direction", Enum.EasingDirection.In)
-		startTweenConfig:SetAttribute("Style", Enum.EasingStyle.Linear)
-		
-		local endTweenConfig = scope:add(Instance.new("Configuration"))
-		endTweenConfig.Parent = boosterConfig
-		endTweenConfig.Name = "EndTweenConfiguration"
-		endTweenConfig:SetAttribute("Time", 0)
-		endTweenConfig:SetAttribute("Direction", Enum.EasingDirection.In)
-		endTweenConfig:SetAttribute("Style", Enum.EasingStyle.Linear)
-		
-		boosterConfig:SetAttribute("Mode", "Pad")
-		boosterConfig:SetAttribute("PadDistance", boosterConfig:GetAttribute("Distance"))
-		scope:add(boosterConfig:GetAttributeChangedSignal("Distance"):Connect(function()
-			boosterConfig:SetAttribute("PadDistance", boosterConfig:GetAttribute("Distance"))
-		end))
+		configuration.PadDistance = boosterConfig:GetAttribute("Distance")
+		configuration.Mode = "Pad"
+		startTweenConfiguration.Time = 0
+		endTweenConfiguration.Time = 0
 	end
 
-	local CharacterUtil = utility.Character
-	local Config = utility.Config
-	local configuration = Config.GetConfig(scope, boosterConfig, BOOSTER_CONFIG_TEMPLATE):ObserveChanges()
-	local touchConfiguration =
-		Config.GetConfig(scope, boosterConfig:FindFirstChild("TouchConfiguration"), Config.TOUCH_CONFIG)
-			:ObserveChanges()
-	local startTweenConfiguration =
-		Config.GetConfig(scope, boosterConfig:FindFirstChild("StartTweenConfiguration"), Config.TWEEN_CONFIG)
-			:ObserveChanges()
-	local endTweenConfiguration =
-		Config.GetConfig(scope, boosterConfig:FindFirstChild("EndTweenConfiguration"), Config.TWEEN_CONFIG)
-			:ObserveChanges()
-		
 	local extraVariableConfig = boosterConfig:FindFirstChild("ExtraVariables")
 	local extraVariables = if extraVariableConfig
 		then extraVariableConfig:GetAttributes()
